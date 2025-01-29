@@ -1,7 +1,10 @@
 // C++ program to generate a valid sudoku 
 // with k empty cells
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 // Returns false if given 3x3 block contains num
