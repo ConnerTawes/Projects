@@ -9,7 +9,7 @@
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": "c:/Users/tawes/ConnersWebsite/Projects/Sudoku",
-      "program": "c:/Users/tawes/ConnersWebsite/Projects/Sudoku/build/Debug/outDebug",
+      "program": "${workspaceFolder}/boardGenerator.out",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
