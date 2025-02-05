@@ -26,6 +26,8 @@ def printBoard(board):
     for num in row:
       print(num.num, " ", end='')
     print()
+  print()
+
 
 # This file reads in the boards from boards.txt to the global array allBoards
 def readBoardsFromFile():
@@ -67,6 +69,24 @@ def checkIfSafe(board, rowLoc, colLoc, num):
   for colNum in range(len(board[0])):
     if board[rowLoc][colNum].num == num:
       return False 
+  # Check if the box is safe
+  # This section finds what box our space is in and applies it to a multiplier for the loop
+  boxRow = rowLoc
+  boxCol = colLoc
+  boxRowMult = 0
+  boxColMult = 0
+  while boxRow >= 3:
+    boxRow -= 3
+    boxRowMult += 1
+  while boxCol >= 3:
+    boxCol -= 3
+    boxColMult += 1
+  # This takes the multiplier just found and uses it to check the box
+  for i in range(boxRowMult * 3, boxRowMult * 3 + 3):
+    for j in range(boxColMult * 3, boxColMult * 3 + 3):
+      if board[i][j].num == num:
+        return False 
+  
   # If it made it out of those loops, it is valid
   return True
 
@@ -75,48 +95,48 @@ def checkIfSafe(board, rowLoc, colLoc, num):
 # from 1 through 9 till a solution is found.
 def solveBoard(board):
   # Iterate through the board
-  for row in range(len(board)):
-    for col in range(len(board[0])):
-      # See if the number is changable
-      if board[row][col].valid == True:
-        numFound = False
+  idx = 0
+  while idx < 81:
+    row = idx // 9
+    col = idx % 9
+    # See if the number is changable
+    if board[row][col].valid == True:
+      numFound = False
 
-        # Makes it so that the starting number is a number 1-9
-        startingTestNum = 0
-        if board[row][col].num == 0: 
-          startingTestNum = 1
-        else:
-          startingTestNum = board[row][col].num
-          
-        # Checks from the number on the board to 9
-        for testNum in range(startingTestNum, 10):
-          if checkIfSafe(board, row, col, testNum):
-            board[row][col] = sudokuSpace(testNum, True)
-            numFound = True
+      # Makes it so that the starting number is a number 1-9
+      startingTestNum = 0
+      if board[row][col].num == 0: 
+        startingTestNum = 1
+      else:
+        startingTestNum = board[row][col].num
+        
+      # Checks from the number on the board to 9
+      for testNum in range(startingTestNum, 10):
+        if checkIfSafe(board, row, col, testNum):
+          print (row, col, idx)
+          board[row][col] = sudokuSpace(testNum, True)
+          numFound = True
+          break
+        
+      # If a number did not work, make this number 0, go to the previous space and iterate
+      # it to the next valid number
+      if not numFound:
+        board[row][col] = sudokuSpace(0, True)
+        
+        # Do while loop to iterate to the previously changable number
+        while True:
+          idx -= 1
+          row = idx // 9
+          col = idx % 9
+          if board[row][col].valid == True:
             break
-          
-        # If a number did not work, make this number 0, go to the previous space and iterate
-        # it to the next valid number
-        if not numFound:
-          board[row][col] = sudokuSpace(0, True)
+        # This continue statement avoids the iteration below
+        continue
 
-          # If testing on column 0, set the column to 7 (so it can iterate to the last column
-          # after after this flow), set the row to the previous row.
-          # 
-          # o o o o     ->     o o o x
-          # x o o o            o o o o
-          # 
-          # If it is not on the first column, then go back to the previous column to continue
-          # iterating that number. (The minus 2 allows the flow to iterate to the next column
-          # and then it is in the correct space)
-          # o o o o     ->     o o o o
-          # o o x o            o x o o
-          if col == 0 and row != 0:
-            col = 7
-            row = row - 1 
-          else:
-            col = col - 2
-   
+    # Go to the next idx
+    idx += 1
+
+  # Print the board after it is solved
   printBoard(board)
 
 readBoardsFromFile()
